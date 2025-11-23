@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="de" class="scroll-smooth">
 <head>
@@ -10,13 +9,16 @@
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Google Fonts: DM Sans (Modern, Clean) -->
+    <!-- Google Fonts: DM Sans -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;700;800&display=swap" rel="stylesheet">
     
-    <!-- Lucide Icons -->
+    <!-- Lucide Icons (Fallback/Statisch) -->
     <script src="https://unpkg.com/lucide@latest"></script>
+
+    <!-- Lordicon (Animiert) -->
+    <script src="https://cdn.lordicon.com/lordicon.js"></script>
 
     <script>
         tailwind.config = {
@@ -27,14 +29,20 @@
                     },
                     colors: {
                         primary: '#0540AD', // Blau
+                        primaryDark: '#04328C', // Dunkleres Blau für Karten im Produkt-Intro
                         accent: '#F79F1F',  // Orange
                         bgLight: '#F6F4F4', // Hellgrau Hintergrund
                         textDark: '#272525', // Dunkler Text
                         textGray: '#8B8B90', // Grau Text
+                        navBg: 'rgba(255, 255, 255, 0.90)',
                     },
                     boxShadow: {
                         'card': '0 4px 20px rgba(0, 0, 0, 0.05)',
                         'card-hover': '0 10px 30px rgba(5, 64, 173, 0.1)',
+                        'float': '0 20px 40px -10px rgba(0,0,0,0.1)',
+                    },
+                    borderRadius: {
+                        'pill': '9999px',
                     }
                 }
             }
@@ -42,7 +50,6 @@
     </script>
 
     <style>
-        /* Custom Utilities */
         .reveal {
             opacity: 0;
             transform: translateY(30px);
@@ -52,76 +59,61 @@
             opacity: 1;
             transform: translateY(0);
         }
-        
-        .blob {
-            position: absolute;
-            filter: blur(40px);
-            z-index: -1;
-            opacity: 0.5;
+        .nav-glass {
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
         }
-
-        /* Smooth Accordion */
         details > summary {
             list-style: none;
         }
         details > summary::-webkit-details-marker {
             display: none;
         }
-        
-        /* Gradient Text */
-        .text-gradient {
-            background-clip: text;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-image: linear-gradient(to right, #0540AD, #2563eb);
-        }
     </style>
 </head>
 <body class="font-sans text-textDark bg-white antialiased overflow-x-hidden">
 
-    <!-- Navigation -->
-    <nav class="fixed w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 transition-all duration-300" id="navbar">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex justify-between items-center h-20">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl">R</div>
-                    <span class="font-bold text-xl tracking-tight text-primary">Retina Flow</span>
+    <!-- SCHWEBENDE NAVIGATION -->
+    <div class="fixed top-6 left-0 right-0 z-50 flex justify-center px-4 pointer-events-none">
+        <nav class="pointer-events-auto bg-navBg nav-glass border border-white/60 shadow-float rounded-full pl-6 pr-2 py-2 flex items-center justify-between max-w-5xl w-full transition-all duration-300 hover:shadow-lg">
+            <a href="#" class="flex items-center gap-2.5 mr-4 group">
+                <div class="w-9 h-9 bg-primary rounded-lg flex items-center justify-center text-white font-bold text-xl shadow-sm group-hover:scale-105 transition-transform">
+                   R
                 </div>
-                
-                <!-- Desktop Menu -->
-                <div class="hidden md:flex items-center space-x-8">
-                    <a href="#problems" class="text-textDark hover:text-primary font-medium transition">Probleme</a>
-                    <a href="#solutions" class="text-textDark hover:text-primary font-medium transition">Lösungen</a>
-                    <a href="#roi" class="text-textDark hover:text-primary font-medium transition">ROI Rechner</a>
-                    <a href="#faq" class="text-textDark hover:text-primary font-medium transition">FAQ</a>
-                    <a href="#contact" class="bg-primary text-white px-6 py-2.5 rounded-lg font-bold hover:bg-blue-800 transition shadow-lg hover:shadow-blue-900/20">
-                        Kostenlos starten
-                    </a>
-                </div>
+                <span class="font-bold text-xl tracking-tight text-primary">Retina Flow</span>
+            </a>
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#problems" class="text-sm font-medium text-textDark hover:text-primary transition-colors">Probleme</a>
+                <a href="#solutions" class="text-sm font-medium text-textDark hover:text-primary transition-colors">Lösungen</a>
+                <a href="#roi" class="text-sm font-medium text-textDark hover:text-primary transition-colors">ROI Rechner</a>
+                <a href="#faq" class="text-sm font-medium text-textDark hover:text-primary transition-colors">FAQ</a>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="#contact" class="bg-primary text-white px-6 py-3 rounded-full font-bold text-sm hover:bg-blue-800 transition shadow-lg hover:shadow-blue-900/20 flex items-center gap-2">
+                    Kostenlos starten 
+                </a>
+                <button id="mobile-menu-btn" class="md:hidden w-10 h-10 flex items-center justify-center rounded-full hover:bg-gray-100 text-textDark transition">
+                    <i data-lucide="menu" class="w-6 h-6"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
 
-                <!-- Mobile Menu Button -->
-                <div class="md:hidden flex items-center">
-                    <button id="mobile-menu-btn" class="text-textDark hover:text-primary focus:outline-none">
-                        <i data-lucide="menu" class="w-8 h-8"></i>
-                    </button>
-                </div>
-            </div>
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 z-40 bg-white/95 backdrop-blur-xl hidden pt-32 px-6 transition-opacity duration-300">
+        <div class="flex flex-col space-y-6 text-center">
+            <a href="#problems" class="text-2xl font-bold text-textDark hover:text-primary transition" onclick="closeMenu()">Probleme</a>
+            <a href="#solutions" class="text-2xl font-bold text-textDark hover:text-primary transition" onclick="closeMenu()">Lösungen</a>
+            <a href="#roi" class="text-2xl font-bold text-textDark hover:text-primary transition" onclick="closeMenu()">ROI Rechner</a>
+            <a href="#contact" class="bg-primary text-white py-4 px-8 rounded-xl font-bold text-lg shadow-lg mx-auto w-full max-w-xs mt-4" onclick="closeMenu()">Kostenlos starten</a>
         </div>
-        
-        <!-- Mobile Menu Panel -->
-        <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-gray-100 absolute w-full shadow-xl">
-            <div class="px-4 pt-2 pb-6 space-y-2">
-                <a href="#problems" class="block px-3 py-3 text-base font-medium text-textDark hover:bg-gray-50 rounded-md">Probleme</a>
-                <a href="#solutions" class="block px-3 py-3 text-base font-medium text-textDark hover:bg-gray-50 rounded-md">Lösungen</a>
-                <a href="#roi" class="block px-3 py-3 text-base font-medium text-textDark hover:bg-gray-50 rounded-md">ROI Rechner</a>
-                <a href="#contact" class="block w-full text-center mt-4 bg-accent text-white px-5 py-3 rounded-lg font-bold">Jetzt starten</a>
-            </div>
-        </div>
-    </nav>
+        <button onclick="closeMenu()" class="absolute top-8 right-8 p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition">
+            <i data-lucide="x" class="w-6 h-6 text-textDark"></i>
+        </button>
+    </div>
 
     <!-- Hero Section -->
-    <section class="relative pt-32 pb-20 lg:pt-48 lg:pb-32 bg-primary overflow-hidden">
-        <!-- Abstract Background Elements -->
+    <section class="relative pt-44 pb-20 lg:pt-60 lg:pb-32 bg-primary overflow-hidden">
         <div class="absolute top-0 right-0 w-1/2 h-full bg-white/5 skew-x-12 transform origin-top-right"></div>
         <div class="absolute bottom-0 left-0 w-64 h-64 bg-accent/20 rounded-full blur-3xl"></div>
 
@@ -146,30 +138,29 @@
                 <!-- Benefits Grid -->
                 <div class="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 text-sm border-t border-white/10 pt-8">
                     <div class="flex items-center gap-3">
-                        <div class="bg-white/10 p-2 rounded-lg">
-                            <i data-lucide="message-square-off" class="text-accent w-5 h-5"></i>
+                        <div class="bg-white/10 p-2 rounded-lg w-10 h-10 flex items-center justify-center">
+                            <lord-icon src="https://cdn.lordicon.com/zpxybbhl.json" trigger="loop" delay="2000" colors="primary:#f79f1f,secondary:#ffffff" style="width:24px;height:24px"></lord-icon>
                         </div>
                         <span class="font-medium">Kein manuelles Messaging</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="bg-white/10 p-2 rounded-lg">
-                            <i data-lucide="clock" class="text-accent w-5 h-5"></i>
+                        <div class="bg-white/10 p-2 rounded-lg w-10 h-10 flex items-center justify-center">
+                            <lord-icon src="https://cdn.lordicon.com/kbtmbyzy.json" trigger="loop" delay="3000" colors="primary:#f79f1f,secondary:#ffffff" style="width:24px;height:24px"></lord-icon>
                         </div>
                         <span class="font-medium">8-12 Stunden sparen</span>
                     </div>
                     <div class="flex items-center gap-3">
-                        <div class="bg-white/10 p-2 rounded-lg">
-                            <i data-lucide="zap" class="text-accent w-5 h-5"></i>
+                        <div class="bg-white/10 p-2 rounded-lg w-10 h-10 flex items-center justify-center">
+                            <lord-icon src="https://cdn.lordicon.com/gqdnbnwt.json" trigger="loop" delay="4000" colors="primary:#f79f1f,secondary:#ffffff" style="width:24px;height:24px"></lord-icon>
                         </div>
                         <span class="font-medium">Effizienz steigern</span>
                     </div>
                 </div>
             </div>
 
-            <!-- Hero Visual (Abstract Dashboard) -->
+            <!-- Hero Visual -->
             <div class="lg:w-5/12 mt-12 lg:mt-0 relative reveal delay-200">
                 <div class="relative bg-white rounded-2xl shadow-2xl p-6 transform rotate-1 hover:rotate-0 transition duration-500">
-                    <!-- Mockup Header -->
                     <div class="flex items-center justify-between border-b border-gray-100 pb-4 mb-4">
                         <div class="flex gap-2">
                             <div class="w-3 h-3 rounded-full bg-red-400"></div>
@@ -178,7 +169,6 @@
                         </div>
                         <div class="text-xs font-mono text-gray-400">dashboard.retinaflow.de</div>
                     </div>
-                    <!-- Mockup Content -->
                     <div class="space-y-4">
                         <div class="flex items-center justify-between bg-green-50 p-4 rounded-xl border border-green-100">
                             <div class="flex items-center gap-3">
@@ -222,57 +212,51 @@
             <div class="text-center max-w-3xl mx-auto mb-16 reveal">
                 <h2 class="text-3xl md:text-4xl font-bold text-textDark mb-6">Jeden Montag der gleiche Wahnsinn</h2>
                 <p class="text-lg text-textGray">
-                    Du hast eine moderne Fahrschule, gute Fahrlehrer und solide Ausstattung. Doch jede Woche beginnt mit den gleichen drei Zeit-Fressern, die dein Team in einen endlosen Koordinations-Marathon zwingen.
+                    Du hast eine moderne Fahrschule, gute Fahrlehrer und solide Ausstattung. Doch jede Woche beginnt mit den gleichen drei Zeit-Fressern.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Problem 1 -->
                 <div class="bg-white p-8 rounded-2xl shadow-card hover:shadow-card-hover transition duration-300 reveal delay-100 group">
-                    <div class="bg-red-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                        <i data-lucide="message-circle" class="text-red-500 w-7 h-7"></i>
+                    <div class="bg-red-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <lord-icon src="https://cdn.lordicon.com/fdxqrdfe.json" trigger="loop" delay="1000" colors="primary:#ef4444" style="width:36px;height:36px"></lord-icon>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Der WhatsApp-Marathon</h3>
-                    <p class="text-textGray text-sm mb-6">50+ Schüler einzeln anschreiben. Antworten interpretieren. Puzzeln mit Verfügbarkeiten. Dann sagt einer ab – alles von vorne.</p>
+                    <p class="text-textGray text-sm mb-6">50+ Schüler einzeln anschreiben. Antworten interpretieren. Puzzeln mit Verfügbarkeiten.</p>
                     <ul class="space-y-2 text-sm">
                         <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> 8-12h pro Woche Koordination</li>
                         <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> 100+ Nachrichten hin und her</li>
-                        <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> Ständige Unterbrechungen</li>
                     </ul>
                 </div>
 
-                <!-- Problem 2 -->
                 <div class="bg-white p-8 rounded-2xl shadow-card hover:shadow-card-hover transition duration-300 reveal delay-200 group">
-                    <div class="bg-red-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                        <i data-lucide="star-off" class="text-red-500 w-7 h-7"></i>
+                    <div class="bg-red-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <lord-icon src="https://cdn.lordicon.com/mdgrhyca.json" trigger="loop" delay="1500" colors="primary:#ef4444" state="hover-glance" style="width:36px;height:36px"></lord-icon>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Die vergessenen Bewertungen</h3>
-                    <p class="text-textGray text-sm mb-6">Lisa besteht! Fahrlehrer notiert: "Muss um Bewertung bitten". Im Tagesgeschäft vergessen. Zwei Wochen später ist der Moment vorbei.</p>
+                    <p class="text-textGray text-sm mb-6">Lisa besteht! Fahrlehrer notiert: "Muss um Bewertung bitten". Im Tagesgeschäft vergessen.</p>
                     <ul class="space-y-2 text-sm">
                         <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> 90% deiner Schüler bewerten nie</li>
                         <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> Konkurrenz hat 4,8★ – du 4,2★</li>
-                        <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> 10-15 verlorene Schüler pro Jahr</li>
                     </ul>
                 </div>
 
-                <!-- Problem 3 -->
                 <div class="bg-white p-8 rounded-2xl shadow-card hover:shadow-card-hover transition duration-300 reveal delay-300 group">
-                    <div class="bg-red-50 w-14 h-14 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
-                        <i data-lucide="image-off" class="text-red-500 w-7 h-7"></i>
+                    <div class="bg-red-50 w-16 h-16 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition">
+                        <lord-icon src="https://cdn.lordicon.com/vixtkkbk.json" trigger="loop" delay="2000" colors="primary:#ef4444" style="width:36px;height:36px"></lord-icon>
                     </div>
                     <h3 class="text-xl font-bold mb-3">Der Social-Media-Vorsatz</h3>
-                    <p class="text-textGray text-sm mb-6">Erfolgs-Foto gemacht: "Das sollten wir posten!". E-Mail verschwindet. Zwei Wochen später ist das Foto veraltet.</p>
+                    <p class="text-textGray text-sm mb-6">Erfolgs-Foto gemacht: "Das sollten wir posten!". E-Mail verschwindet. Foto veraltet.</p>
                     <ul class="space-y-2 text-sm">
                         <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> 5-10 Posts pro Jahr (sporadisch)</li>
-                        <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> Instagram = tot, Facebook inaktiv</li>
                         <li class="flex items-center gap-2 text-red-600"><i data-lucide="x" class="w-4 h-4"></i> Unsichtbar für Neukunden</li>
                     </ul>
                 </div>
             </div>
             
-            <div class="mt-12 p-6 bg-white border-l-4 border-primary rounded-r-lg shadow-sm reveal">
+             <div class="mt-12 p-6 bg-white border-l-4 border-primary rounded-r-lg shadow-sm reveal">
                 <p class="text-textDark italic text-center md:text-left">
-                    "Das Problem ist nicht deine Software. Das Problem ist die Zeit. Jeden Tag verbringt dein Team Stunden mit manueller Arbeit, die längst automatisiert sein sollte."
+                    "Das Problem ist nicht deine Software. Das Problem ist die Zeit. Jeden Tag verbringt dein Team Stunden mit manueller Arbeit, die längst automatisiert sein sollte: WhatsApp-Nachrichten tippen, Antworten sammeln, Termine puzzeln, um Bewertungen bitten oder Social-Media-Posts erstellen – und dabei oft scheitern."
                 </p>
             </div>
         </div>
@@ -283,17 +267,16 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-16 reveal">
                 <span class="text-primary font-bold tracking-wider uppercase text-sm">Die Lösung</span>
-                <h2 class="text-3xl md:text-4xl font-bold text-textDark mt-2">Dein Weg zu mehr Effizienz und Wachstum</h2>
+                <h2 class="text-3xl md:text-4xl font-bold text-textDark mt-2">Dein Weg zu mehr Effizienz</h2>
                 <p class="text-textGray mt-4 max-w-2xl mx-auto">
-                    Entdecke, wie unsere Automatisierungslösungen deine Fahrschule revolutionieren – von der Terminplanung bis zum Online-Ruf.
+                    Entdecke, wie unsere Automatisierungslösungen deine Fahrschule revolutionieren.
                 </p>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                <!-- Solution 1 -->
                 <div class="border border-gray-100 p-8 rounded-2xl hover:border-primary/30 hover:shadow-xl transition duration-300 reveal">
-                    <div class="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-6 text-primary">
-                        <i data-lucide="calendar-check-2" class="w-6 h-6"></i>
+                    <div class="bg-blue-50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 text-primary">
+                        <lord-icon src="https://cdn.lordicon.com/abfverha.json" trigger="loop" delay="1000" colors="primary:#0540ad" style="width:36px;height:36px"></lord-icon>
                     </div>
                     <h3 class="text-lg font-bold mb-3">Automatisierte Terminplanung</h3>
                     <p class="text-textGray text-sm mb-4">Nie wieder endloses Hin und Her. Unser System koordiniert Termine automatisch mit Schülern und Fahrlehrern.</p>
@@ -303,26 +286,24 @@
                     </div>
                 </div>
 
-                <!-- Solution 2 -->
                 <div class="border border-gray-100 p-8 rounded-2xl hover:border-primary/30 hover:shadow-xl transition duration-300 reveal delay-100">
-                    <div class="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-6 text-primary">
-                        <i data-lucide="star" class="w-6 h-6"></i>
+                    <div class="bg-blue-50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 text-primary">
+                        <lord-icon src="https://cdn.lordicon.com/mdgrhyca.json" trigger="loop" delay="1500" colors="primary:#0540ad" style="width:36px;height:36px"></lord-icon>
                     </div>
                     <h3 class="text-lg font-bold mb-3">Intelligentes Bewertungsmanagement</h3>
                     <p class="text-textGray text-sm mb-4">Wandle jeden Prüfungserfolg in eine glänzende Online-Bewertung um. Proaktiv und zur richtigen Zeit.</p>
                     <div class="space-y-2">
-                        <div class="flex items-center gap-2 text-sm font-medium text-textDark"><i data-lucide="check-circle" class="text-accent w-4 h-4"></i> Auto-Anfragen nach Prüfung</div>
+                        <div class="flex items-center gap-2 text-sm font-medium text-textDark"><i data-lucide="check-circle" class="text-accent w-4 h-4"></i> Auto-Anfragen</div>
                         <div class="flex items-center gap-2 text-sm font-medium text-textDark"><i data-lucide="check-circle" class="text-accent w-4 h-4"></i> Sichtbarkeit steigern</div>
                     </div>
                 </div>
 
-                <!-- Solution 3 -->
                 <div class="border border-gray-100 p-8 rounded-2xl hover:border-primary/30 hover:shadow-xl transition duration-300 reveal delay-200">
-                    <div class="bg-blue-50 w-12 h-12 rounded-lg flex items-center justify-center mb-6 text-primary">
-                        <i data-lucide="share-2" class="w-6 h-6"></i>
+                    <div class="bg-blue-50 w-16 h-16 rounded-lg flex items-center justify-center mb-6 text-primary">
+                        <lord-icon src="https://cdn.lordicon.com/ogkflacg.json" trigger="loop" delay="2000" colors="primary:#0540ad" style="width:36px;height:36px"></lord-icon>
                     </div>
                     <h3 class="text-lg font-bold mb-3">Social Media Automatisierung</h3>
-                    <p class="text-textGray text-sm mb-4">Unsere Lösung verwandelt Erfolgsgeschichten automatisch in ansprechende Posts für deine Kanäle.</p>
+                    <p class="text-textGray text-sm mb-4">Verwandelt Erfolgsgeschichten automatisch in ansprechende Posts.</p>
                     <div class="space-y-2">
                         <div class="flex items-center gap-2 text-sm font-medium text-textDark"><i data-lucide="check-circle" class="text-accent w-4 h-4"></i> Automatische Posts</div>
                         <div class="flex items-center gap-2 text-sm font-medium text-textDark"><i data-lucide="check-circle" class="text-accent w-4 h-4"></i> Lebendige Profile</div>
@@ -332,67 +313,70 @@
         </div>
     </section>
 
-    <!-- Product Intro -->
-    <section class="py-20 bg-primary text-white">
+    <!-- Product Intro (Updated to match image_bf252a.png) -->
+    <section class="py-24 bg-primary text-white">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col md:flex-row items-center gap-12">
-                <div class="md:w-1/2 reveal">
-                    <div class="text-accent font-bold mb-2 tracking-widest uppercase">Das Produkt</div>
-                    <h2 class="text-3xl md:text-5xl font-bold mb-6 leading-tight">
-                        Retina Flow: Dein Autopilot für alles, was ihr jetzt noch manuell macht.
+            <div class="flex flex-col lg:flex-row items-center gap-16">
+                
+                <!-- Left Content -->
+                <div class="lg:w-5/12 reveal">
+                    <div class="text-accent font-bold mb-2 tracking-widest uppercase text-sm">Das Produkt</div>
+                    <h2 class="text-4xl md:text-6xl font-bold mb-6 leading-tight">
+                        Retina Flow: Dein Autopilot
                     </h2>
-                    <p class="text-blue-100 text-lg mb-8">
-                        Kein wöchentlicher WhatsApp-Marathon mehr. Keine vergessenen Bewertungen mehr. Das System arbeitet mit deiner bestehenden Software zusammen und übernimmt die zeitraubende Arbeit.
+                    <p class="text-blue-100 text-lg mb-10">
+                        Kein wöchentlicher WhatsApp-Marathon mehr. Das System arbeitet mit deiner bestehenden Software zusammen.
                     </p>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm">
-                            <i data-lucide="refresh-cw" class="text-accent w-8 h-8 mb-3"></i>
-                            <h4 class="font-bold mb-1">Repetitive Aufgaben</h4>
-                            <p class="text-sm text-blue-200">Termine, Bewertungen & Posts laufen automatisch.</p>
+                    
+                    <!-- Feature Grid with Cards look -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div class="bg-primaryDark p-5 rounded-xl flex flex-col gap-3 hover:bg-blue-900/50 transition cursor-default group">
+                            <lord-icon src="https://cdn.lordicon.com/sbiheqdr.json" trigger="loop" delay="2000" colors="primary:#f79f1f" style="width:32px;height:32px"></lord-icon>
+                            <div>
+                                <h4 class="font-bold text-white group-hover:text-accent transition">Repetitive Aufgaben</h4>
+                            </div>
                         </div>
-                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm">
-                            <i data-lucide="layers" class="text-accent w-8 h-8 mb-3"></i>
-                            <h4 class="font-bold mb-1">Integration</h4>
-                            <p class="text-sm text-blue-200">Läuft parallel zu deiner Fahrschul-Software.</p>
+                        <div class="bg-primaryDark p-5 rounded-xl flex flex-col gap-3 hover:bg-blue-900/50 transition cursor-default group">
+                            <lord-icon src="https://cdn.lordicon.com/qhgmphtg.json" trigger="loop" delay="3000" colors="primary:#f79f1f" style="width:32px;height:32px"></lord-icon>
+                            <div>
+                                <h4 class="font-bold text-white group-hover:text-accent transition">Integration</h4>
+                            </div>
                         </div>
-                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm">
-                            <i data-lucide="shield-check" class="text-accent w-8 h-8 mb-3"></i>
-                            <h4 class="font-bold mb-1">DSGVO Konform</h4>
-                            <p class="text-sm text-blue-200">Datenschutz und Sicherheit auf deutschen Servern.</p>
+                        <div class="bg-primaryDark p-5 rounded-xl flex flex-col gap-3 hover:bg-blue-900/50 transition cursor-default group">
+                            <lord-icon src="https://cdn.lordicon.com/hjeefwhm.json" trigger="loop" delay="4000" colors="primary:#f79f1f" style="width:32px;height:32px"></lord-icon>
+                            <div>
+                                <h4 class="font-bold text-white group-hover:text-accent transition">DSGVO Konform</h4>
+                            </div>
                         </div>
-                        <div class="bg-white/10 p-4 rounded-xl backdrop-blur-sm">
-                            <i data-lucide="zap" class="text-accent w-8 h-8 mb-3"></i>
-                            <h4 class="font-bold mb-1">2 Wochen Setup</h4>
-                            <p class="text-sm text-blue-200">Vollständige Implementierung durch uns.</p>
+                        <div class="bg-primaryDark p-5 rounded-xl flex flex-col gap-3 hover:bg-blue-900/50 transition cursor-default group">
+                            <lord-icon src="https://cdn.lordicon.com/nocovwne.json" trigger="loop" delay="5000" colors="primary:#f79f1f" style="width:32px;height:32px"></lord-icon>
+                            <div>
+                                <h4 class="font-bold text-white group-hover:text-accent transition">2 Wochen Setup</h4>
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div class="md:w-1/2 w-full reveal delay-200">
-                    <!-- Abstract Visualization of Connectivity -->
-                    <div class="relative bg-white rounded-3xl p-8 text-textDark shadow-2xl">
-                        <div class="absolute -top-10 -right-10 w-32 h-32 bg-accent/30 rounded-full blur-2xl"></div>
+
+                <!-- Right Visual (Matching the white card in screenshot) -->
+                <div class="lg:w-7/12 w-full reveal delay-200 flex justify-center lg:justify-end">
+                    <div class="bg-white rounded-[2.5rem] p-12 shadow-2xl w-full max-w-lg relative">
                         
-                        <div class="text-center mb-8">
-                            <div class="inline-block bg-gray-100 rounded-lg px-4 py-2 text-sm font-bold text-gray-600 mb-2">Deine Fahrschul-Software</div>
-                            <div class="h-8 w-0.5 bg-gray-300 mx-auto"></div>
-                            <div class="bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-lg z-10 relative">Retina Flow Core</div>
-                            <div class="h-8 w-0.5 bg-primary mx-auto"></div>
+                        <!-- Connection Graphic -->
+                        <div class="flex flex-col items-center justify-center py-12">
+                            <!-- Top Box -->
+                            <div class="bg-gray-100 px-6 py-3 rounded-lg text-gray-600 font-bold text-sm mb-2">
+                                Deine Fahrschul-Software
+                            </div>
+                            
+                            <!-- Connector Line -->
+                            <div class="h-12 w-0.5 bg-gray-300"></div>
+                            
+                            <!-- Bottom Box (Core) -->
+                            <div class="bg-primary text-white w-full py-4 rounded-xl font-bold text-lg text-center shadow-lg shadow-blue-200">
+                                Retina Flow Core
+                            </div>
                         </div>
 
-                        <div class="grid grid-cols-3 gap-4 text-center">
-                            <div class="bg-blue-50 p-4 rounded-xl">
-                                <div class="bg-blue-100 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-primary"><i data-lucide="calendar"></i></div>
-                                <div class="text-xs font-bold">Termine</div>
-                            </div>
-                            <div class="bg-orange-50 p-4 rounded-xl">
-                                <div class="bg-orange-100 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-accent"><i data-lucide="star"></i></div>
-                                <div class="text-xs font-bold">Reviews</div>
-                            </div>
-                            <div class="bg-purple-50 p-4 rounded-xl">
-                                <div class="bg-purple-100 w-10 h-10 rounded-full flex items-center justify-center mx-auto mb-2 text-purple-600"><i data-lucide="share-2"></i></div>
-                                <div class="text-xs font-bold">Social</div>
-                            </div>
-                        </div>
                     </div>
                 </div>
             </div>
@@ -400,56 +384,61 @@
     </section>
 
     <!-- Module 1: Termin-Autopilot -->
-    <section class="py-20 overflow-hidden">
+    <section class="py-24 overflow-hidden">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col lg:flex-row gap-12 items-center">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
                 <div class="lg:w-1/2 reveal">
                     <div class="text-primary font-bold mb-2 uppercase tracking-wider">Modul 1</div>
                     <h2 class="text-3xl md:text-4xl font-bold mb-6">Termin-Autopilot – Schluss mit dem wöchentlichen WhatsApp-Marathon</h2>
                     
-                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-8">
+                    <!-- Comparison Box -->
+                    <div class="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden mb-10">
                         <div class="grid grid-cols-2 divide-x divide-gray-100">
-                            <div class="p-6 bg-red-50/50">
-                                <h4 class="font-bold text-red-600 mb-4 flex items-center gap-2"><i data-lucide="x-circle" class="w-4 h-4"></i> Manuell (JETZT)</h4>
-                                <ul class="space-y-3 text-sm text-gray-600">
-                                    <li>• 50 Schüler einzeln anschreiben</li>
-                                    <li>• Antworten sammeln & puzzeln</li>
-                                    <li>• Absagen neu koordinieren</li>
-                                    <li class="font-bold">• 8-12 Stunden Aufwand</li>
+                            <div class="p-8 bg-red-50/50">
+                                <h4 class="font-bold text-red-600 mb-6 flex items-center gap-2"><i data-lucide="x-circle" class="w-5 h-5"></i> Manuell</h4>
+                                <ul class="space-y-4 text-sm text-gray-600">
+                                    <li class="flex items-start gap-2"><span class="text-red-400">•</span> 50 Schüler einzeln anschreiben</li>
+                                    <li class="flex items-start gap-2"><span class="text-red-400">•</span> Antworten sammeln & puzzeln</li>
+                                    <li class="flex items-start gap-2"><span class="text-red-400">•</span> Absagen neu koordinieren</li>
+                                    <li class="font-bold pt-2 text-red-700">8-12 Stunden Aufwand</li>
                                 </ul>
                             </div>
-                            <div class="p-6 bg-green-50/50">
-                                <h4 class="font-bold text-green-600 mb-4 flex items-center gap-2"><i data-lucide="check-circle" class="w-4 h-4"></i> Retina Flow</h4>
-                                <ul class="space-y-3 text-sm text-gray-600">
-                                    <li>• Automatische Abfrage</li>
-                                    <li>• KI-Optimierte Vorschläge</li>
-                                    <li>• Bestätigung per Klick</li>
-                                    <li class="font-bold">• 0 Stunden Aufwand</li>
+                            <div class="p-8 bg-green-50/50">
+                                <h4 class="font-bold text-green-600 mb-6 flex items-center gap-2"><i data-lucide="check-circle" class="w-5 h-5"></i> Retina Flow</h4>
+                                <ul class="space-y-4 text-sm text-gray-600">
+                                    <li class="flex items-start gap-2"><span class="text-green-500">•</span> Automatische Abfrage</li>
+                                    <li class="flex items-start gap-2"><span class="text-green-500">•</span> KI-Optimierte Vorschläge</li>
+                                    <li class="flex items-start gap-2"><span class="text-green-500">•</span> Bestätigung per Klick</li>
+                                    <li class="font-bold pt-2 text-green-700">0 Stunden Aufwand</li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
                     <div class="grid grid-cols-3 gap-4">
-                        <div class="text-center">
-                            <div class="text-3xl font-bold text-primary">10h</div>
-                            <div class="text-xs text-textGray">Pro Woche gespart</div>
+                        <div class="text-center p-4 bg-bgLight rounded-xl">
+                            <div class="text-3xl font-bold text-primary mb-1">10h</div>
+                            <div class="text-xs text-textGray">Gespart/Woche</div>
                         </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold text-primary">90%</div>
+                        <div class="text-center p-4 bg-bgLight rounded-xl">
+                            <div class="text-3xl font-bold text-primary mb-1">90%</div>
                             <div class="text-xs text-textGray">Weniger Stress</div>
                         </div>
-                        <div class="text-center">
-                            <div class="text-3xl font-bold text-primary">100%</div>
-                            <div class="text-xs text-textGray">Bessere Auslastung</div>
+                        <div class="text-center p-4 bg-bgLight rounded-xl">
+                            <div class="text-3xl font-bold text-primary mb-1">100%</div>
+                            <div class="text-xs text-textGray">Auslastung</div>
                         </div>
+                    </div>
+
+                     <div class="mt-8 text-textGray text-lg italic border-l-4 border-primary pl-6 py-2">
+                        "Montagmorgen: Alle Termine fertig. Dein Team kann arbeiten. Fahrlehrer wissen sofort, was die Woche läuft."
                     </div>
                 </div>
                 
                 <div class="lg:w-1/2 relative reveal delay-200">
                     <!-- Chat Simulation -->
-                    <div class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl border border-gray-200 p-4">
-                        <div class="flex items-center gap-3 border-b pb-3 mb-4">
+                    <div class="max-w-md mx-auto bg-white rounded-3xl shadow-2xl border border-gray-200 p-6">
+                        <div class="flex items-center gap-3 border-b pb-4 mb-6">
                             <div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">RF</div>
                             <div>
                                 <div class="font-bold text-sm">Fahrschule Assistent</div>
@@ -457,24 +446,20 @@
                             </div>
                         </div>
                         <div class="space-y-4 text-sm">
-                            <div class="bg-gray-100 p-3 rounded-r-xl rounded-bl-xl max-w-[85%]">
+                            <div class="bg-gray-100 p-4 rounded-r-xl rounded-bl-xl max-w-[90%]">
                                 Hallo Tom! 👋 Hier sind Vorschläge für deine Fahrstunden nächste Woche basierend auf deinem Kalender:
                             </div>
-                            <div class="bg-white border border-gray-200 p-3 rounded-xl shadow-sm max-w-[85%] cursor-pointer hover:border-primary transition">
-                                <div class="font-bold text-primary">Dienstag, 15:00 Uhr</div>
-                                <div class="text-xs text-gray-500">Fahrlehrer Schmidt • Golf 7</div>
-                            </div>
-                            <div class="bg-white border border-gray-200 p-3 rounded-xl shadow-sm max-w-[85%] cursor-pointer hover:border-primary transition">
-                                <div class="font-bold text-primary">Donnerstag, 10:30 Uhr</div>
-                                <div class="text-xs text-gray-500">Fahrlehrer Schmidt • Golf 7</div>
+                            <div class="bg-white border border-gray-200 p-4 rounded-xl shadow-sm max-w-[90%] cursor-pointer hover:border-primary transition group">
+                                <div class="font-bold text-primary group-hover:text-blue-700">Dienstag, 15:00 Uhr</div>
+                                <div class="text-xs text-gray-500 mt-1">Fahrlehrer Schmidt • Golf 7</div>
                             </div>
                             <div class="flex justify-end">
-                                <div class="bg-primary text-white p-3 rounded-l-xl rounded-br-xl max-w-[85%]">
+                                <div class="bg-primary text-white p-4 rounded-l-xl rounded-br-xl max-w-[90%]">
                                     Dienstag passt super! 👍
                                 </div>
                             </div>
-                            <div class="bg-gray-100 p-3 rounded-r-xl rounded-bl-xl max-w-[85%] flex items-center gap-2">
-                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i> Eingebucht! Du hast soeben eine Bestätigung per Mail erhalten.
+                            <div class="bg-gray-100 p-4 rounded-r-xl rounded-bl-xl max-w-[90%] flex items-center gap-2">
+                                <i data-lucide="check" class="w-4 h-4 text-green-600"></i> Eingebucht! Bestätigung per Mail ist raus.
                             </div>
                         </div>
                     </div>
@@ -483,79 +468,137 @@
         </div>
     </section>
 
-    <!-- Module 2: Review Autopilot -->
-    <section class="py-20 bg-bgLight">
+    <!-- Module 2: Review Autopilot (With Comparison as requested) -->
+    <section class="py-24 bg-bgLight">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex flex-col-reverse lg:flex-row gap-12 items-center">
+            <div class="flex flex-col-reverse lg:flex-row gap-16 items-center">
                 <div class="lg:w-1/2 relative reveal">
-                    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto">
-                        <div class="flex items-center justify-center mb-6">
-                            <div class="flex gap-1">
-                                <i data-lucide="star" class="w-8 h-8 text-yellow-400 fill-current"></i>
-                                <i data-lucide="star" class="w-8 h-8 text-yellow-400 fill-current"></i>
-                                <i data-lucide="star" class="w-8 h-8 text-yellow-400 fill-current"></i>
-                                <i data-lucide="star" class="w-8 h-8 text-yellow-400 fill-current"></i>
-                                <i data-lucide="star" class="w-8 h-8 text-yellow-400 fill-current"></i>
-                            </div>
-                        </div>
-                        <h3 class="text-center text-2xl font-bold mb-2">4.8 / 5.0</h3>
-                        <p class="text-center text-gray-500 text-sm mb-8">Basierend auf 142 Bewertungen</p>
-                        
-                        <div class="space-y-4">
-                            <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0"></div>
-                                <div>
-                                    <div class="font-bold text-sm">Lisa M.</div>
-                                    <div class="text-xs text-gray-500 mb-1">Vor 2 Stunden</div>
-                                    <p class="text-sm text-gray-700">Super Fahrschule! Die App zur Terminfindung war mega praktisch und die Prüfung hab ich direkt bestanden.</p>
-                                </div>
-                            </div>
-                            <div class="h-px bg-gray-100 w-full"></div>
-                            <div class="flex items-start gap-3">
-                                <div class="w-8 h-8 rounded-full bg-gray-200 flex-shrink-0"></div>
-                                <div>
-                                    <div class="font-bold text-sm">Kevin P.</div>
-                                    <div class="text-xs text-gray-500 mb-1">Gestern</div>
-                                    <p class="text-sm text-gray-700">Einfach top. Danke an das ganze Team für die Geduld!</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     
-                    <!-- Floating Badge -->
-                    <div class="absolute -bottom-6 -right-6 bg-accent text-white p-4 rounded-xl shadow-lg animate-bounce hidden md:block">
-                        <div class="font-bold text-xl">+40</div>
-                        <div class="text-xs">Reviews/Jahr</div>
+                    <!-- Stats Badge -->
+                    <div class="bg-white rounded-2xl shadow-xl p-8 max-w-md mx-auto mb-8 relative overflow-hidden">
+                        <div class="absolute top-0 left-0 w-full h-2 bg-accent"></div>
+                        <div class="flex justify-between items-end mb-6">
+                            <div>
+                                <div class="text-5xl font-bold text-textDark">4.8</div>
+                                <div class="flex gap-1 mt-2">
+                                    <i data-lucide="star" class="w-5 h-5 text-accent fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-accent fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-accent fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-accent fill-current"></i>
+                                    <i data-lucide="star" class="w-5 h-5 text-accent fill-current"></i>
+                                </div>
+                            </div>
+                            <div class="text-right">
+                                <div class="text-sm text-gray-500">Google Rating</div>
+                                <div class="text-xs text-green-600 font-bold">+0.6 Sterne</div>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 text-sm">Basierend auf 142 Bewertungen (+40 dieses Jahr)</p>
+                    </div>
+
+                    <!-- WhatsApp Preview -->
+                    <div class="max-w-md mx-auto bg-white rounded-2xl shadow-md border border-gray-100 p-4 relative">
+                        <div class="absolute -top-3 right-4 bg-green-100 text-green-800 text-xs font-bold px-2 py-1 rounded uppercase tracking-wide">WhatsApp</div>
+                        <p class="text-sm text-textDark leading-relaxed">
+                            "Herzlichen Glückwunsch! 🎉 Wir würden uns freuen, wenn du uns kurz bei Google bewertest – es dauert nur 30 Sekunden und hilft uns enorm."
+                        </p>
                     </div>
                 </div>
 
                 <div class="lg:w-1/2 reveal delay-200">
                     <div class="text-primary font-bold mb-2 uppercase tracking-wider">Modul 2</div>
                     <h2 class="text-3xl md:text-4xl font-bold mb-6">Bewertungs-Autopilot – Keine vergessene Bewertung mehr</h2>
-                    <p class="text-textGray text-lg mb-8">
-                        Der entscheidende Moment kommt direkt nach der bestandenen Prüfung. Genau dann sollte die Bewertungsanfrage kommen. Retina Flow erfasst automatisch, wann ein Schüler besteht, und startet den Prozess sofort.
+                    <p class="text-textGray text-lg mb-10">
+                        Der entscheidende Moment kommt direkt nach der bestandenen Prüfung. Retina Flow erfasst automatisch, wann ein Schüler besteht, und startet den Prozess sofort.
                     </p>
                     
-                    <div class="space-y-6">
-                        <div class="flex gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-primary flex-shrink-0 font-bold">1</div>
-                            <div>
-                                <h4 class="font-bold text-lg">Schüler besteht Prüfung</h4>
-                                <p class="text-sm text-textGray">System erkennt Statusänderung in deiner Software.</p>
+                    <!-- Added Comparison as per original prompt -->
+                    <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div class="grid grid-cols-2 divide-x divide-gray-100">
+                            <div class="p-6">
+                                <div class="font-bold text-red-600 mb-4 text-sm uppercase tracking-wide">Manuell (Jetzt)</div>
+                                <p class="text-sm text-gray-600 mb-2">Schüler besteht ➔ Notiz "Bewertung anfragen" ➔ Im Stress vergessen ➔ 2 Wochen später zu spät.</p>
+                                <div class="text-red-600 font-bold text-sm mt-4">Ergebnis: 90% bewerten nie</div>
+                            </div>
+                            <div class="p-6 bg-blue-50/30">
+                                <div class="font-bold text-primary mb-4 text-sm uppercase tracking-wide">Retina Flow</div>
+                                <p class="text-sm text-gray-600 mb-2">Schüler besteht ➔ System erkennt es ➔ 2h später Auto-WhatsApp mit Link ➔ Auto-Reminder.</p>
+                                <div class="text-primary font-bold text-sm mt-4">Ergebnis: +40 Reviews/Jahr</div>
                             </div>
                         </div>
-                        <div class="flex gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-primary flex-shrink-0 font-bold">2</div>
-                            <div>
-                                <h4 class="font-bold text-lg">Automatische WhatsApp</h4>
-                                <p class="text-sm text-textGray">2 Stunden später: Persönliche Nachricht mit 1-Klick-Link.</p>
-                            </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Module 3: Social-Media-Autopilot -->
+    <section class="py-24 overflow-hidden bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-center">
+                <div class="lg:w-1/2 reveal">
+                    <div class="text-primary font-bold mb-2 uppercase tracking-wider">Modul 3</div>
+                    <h2 class="text-3xl md:text-4xl font-bold mb-6">Social-Media-Autopilot – Jede bestandene Prüfung wird automatisch gepostet</h2>
+                    <p class="text-textGray text-lg mb-8">
+                        Content-Erstellung braucht Zeit. Retina Flow löst das radikal einfach: Der Fahrlehrer macht ein Foto – unser System erledigt den Rest (Design, Text, Hashtags & Upload).
+                    </p>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
+                        <div class="bg-bgLight p-4 rounded-xl border border-gray-100 text-center">
+                            <div class="text-2xl font-bold text-primary mb-1">40-60</div>
+                            <div class="text-xs text-textGray">Posts pro Jahr</div>
                         </div>
-                        <div class="flex gap-4">
-                            <div class="w-12 h-12 rounded-full bg-blue-100 flex items-center justify-center text-primary flex-shrink-0 font-bold">3</div>
-                            <div>
-                                <h4 class="font-bold text-lg">Intelligentes Follow-up</h4>
-                                <p class="text-sm text-textGray">Keine Reaktion? Freundliche Erinnerung nach 3 Tagen.</p>
+                        <div class="bg-bgLight p-4 rounded-xl border border-gray-100 text-center">
+                            <div class="flex justify-center mb-1">
+                                <lord-icon src="https://cdn.lordicon.com/ofwpzftr.json" trigger="loop" colors="primary:#f79f1f" style="width:32px;height:32px"></lord-icon>
+                            </div>
+                            <div class="text-xs text-textGray">Lebendiger Kanal</div>
+                        </div>
+                        <div class="bg-bgLight p-4 rounded-xl border border-gray-100 text-center">
+                            <div class="text-2xl font-bold text-green-500 mb-1">Top</div>
+                            <div class="text-xs text-textGray">Sichtbarkeit</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="lg:w-1/2 reveal delay-200">
+                    <!-- Timeline Process -->
+                    <div class="bg-white rounded-2xl shadow-xl p-8 border border-gray-100 relative">
+                        <div class="absolute left-12 top-12 bottom-12 w-0.5 bg-gray-100"></div>
+
+                        <div class="space-y-8 relative z-10">
+                            <!-- Step 1 -->
+                            <div class="flex gap-6">
+                                <div class="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-sm flex-shrink-0">1</div>
+                                <div>
+                                    <h4 class="font-bold text-textDark">Fahrlehrer schickt Foto</h4>
+                                    <p class="text-sm text-textGray mt-1">Per WhatsApp an das System. Dauert 5 Sekunden.</p>
+                                </div>
+                            </div>
+                            <!-- Step 2 -->
+                            <div class="flex gap-6">
+                                <div class="w-8 h-8 rounded-full bg-white border-2 border-primary text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">2</div>
+                                <div>
+                                    <h4 class="font-bold text-textDark">Auto-Design & Branding</h4>
+                                    <p class="text-sm text-textGray mt-1">System setzt Logo, Farben und "Bestanden"-Sticker.</p>
+                                </div>
+                            </div>
+                            <!-- Step 3 -->
+                            <div class="flex gap-6">
+                                <div class="w-8 h-8 rounded-full bg-white border-2 border-primary text-primary flex items-center justify-center font-bold text-sm flex-shrink-0">3</div>
+                                <div>
+                                    <h4 class="font-bold text-textDark">KI schreibt Text</h4>
+                                    <p class="text-sm text-textGray mt-1">Generiert ansprechenden Text und passende Hashtags.</p>
+                                </div>
+                            </div>
+                            <!-- Step 4 -->
+                            <div class="flex gap-6">
+                                <div class="w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center font-bold text-sm flex-shrink-0"><i data-lucide="check" class="w-4 h-4"></i></div>
+                                <div>
+                                    <h4 class="font-bold text-textDark">Veröffentlichung</h4>
+                                    <p class="text-sm text-textGray mt-1">Post geht live auf Insta & Facebook (oder nach Freigabe).</p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -565,7 +608,7 @@
     </section>
 
     <!-- Before / After Section -->
-    <section class="py-20 bg-white">
+    <section class="py-20 bg-bgLight">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12 reveal">
                 <h2 class="text-3xl md:text-4xl font-bold mb-4">Montagmorgen: Vorher vs. Nachher</h2>
@@ -574,7 +617,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-0 rounded-3xl overflow-hidden shadow-2xl">
                 <!-- Before -->
-                <div class="bg-gray-50 p-8 md:p-12 border-r border-gray-200 relative group">
+                <div class="bg-white p-8 md:p-12 border-r border-gray-200 relative group">
                     <div class="absolute top-0 left-0 w-full h-2 bg-red-500"></div>
                     <div class="flex items-center justify-between mb-8">
                         <h3 class="text-2xl font-bold text-gray-800">VORHER</h3>
@@ -652,73 +695,26 @@
         </div>
     </section>
 
-    <!-- ROI / Cost Section -->
+    <!-- ROI Section -->
     <section id="roi" class="py-20 bg-primary text-white relative overflow-hidden">
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9InJnYmEoMjU1LDI1NSwyNTUsMC4wNSkiLz48L3N2Zz4=')] opacity-30"></div>
-        
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div class="text-center mb-12 reveal">
-                <h2 class="text-3xl md:text-4xl font-bold mb-4">Was kostet dich die manuelle Arbeit gerade?</h2>
+                <h2 class="text-3xl md:text-4xl font-bold mb-4">Was kostet dich die manuelle Arbeit?</h2>
                 <p class="text-blue-100">Die Opportunitätskosten sind enorm. Lass uns rechnen.</p>
             </div>
-
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
-                <!-- Card 1 -->
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 reveal delay-100">
-                    <h3 class="text-xl font-bold mb-4 text-accent">WhatsApp-Marathon</h3>
-                    <div class="text-sm text-blue-100 space-y-2 mb-4">
-                        <div class="flex justify-between"><span>Zeitaufwand:</span> <span>10h / Woche</span></div>
-                        <div class="flex justify-between"><span>Kosten/Std:</span> <span>45 €</span></div>
-                        <div class="h-px bg-white/20 my-2"></div>
-                        <div class="flex justify-between font-bold text-white"><span>Verlust/Jahr:</span> <span>21.600 €</span></div>
-                    </div>
-                    <p class="text-xs text-blue-200">Durch reine Verwaltungskosten.</p>
-                </div>
-
-                <!-- Card 2 -->
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 reveal delay-200">
-                    <h3 class="text-xl font-bold mb-4 text-accent">Verpasste Reviews</h3>
-                    <div class="text-sm text-blue-100 space-y-2 mb-4">
-                        <div class="flex justify-between"><span>Verlorene Schüler:</span> <span>10 / Jahr</span></div>
-                        <div class="flex justify-between"><span>Wert/Schüler:</span> <span>2.000 €</span></div>
-                        <div class="h-px bg-white/20 my-2"></div>
-                        <div class="flex justify-between font-bold text-white"><span>Verlust/Jahr:</span> <span>20.000 €</span></div>
-                    </div>
-                    <p class="text-xs text-blue-200">Durch schlechteres Google-Ranking.</p>
-                </div>
-
-                <!-- Card 3 -->
-                <div class="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20 reveal delay-300">
-                    <h3 class="text-xl font-bold mb-4 text-accent">Tote Social Media</h3>
-                    <div class="text-sm text-blue-100 space-y-2 mb-4">
-                        <div class="flex justify-between"><span>Posts/Jahr:</span> <span>5-10 (unsichtbar)</span></div>
-                        <div class="flex justify-between"><span>Verlorene Schüler:</span> <span>~7 / Jahr</span></div>
-                        <div class="h-px bg-white/20 my-2"></div>
-                        <div class="flex justify-between font-bold text-white"><span>Verlust/Jahr:</span> <span>15.000 €</span></div>
-                    </div>
-                    <p class="text-xs text-blue-200">An sichtbarere Konkurrenz.</p>
-                </div>
-            </div>
-
-            <!-- Big ROI Summary -->
             <div class="bg-white text-textDark rounded-3xl p-8 md:p-12 shadow-2xl reveal">
-                <div class="grid grid-cols-1 md:grid-cols-4 gap-8 text-center divide-y md:divide-y-0 md:divide-x divide-gray-200">
-                    <div class="pt-4 md:pt-0">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div>
                         <div class="text-lg text-gray-500 mb-1">Kosten Manuell</div>
                         <div class="text-4xl font-extrabold text-red-500">56.600 €</div>
                         <div class="text-xs text-gray-400 mt-2">Pro Jahr</div>
                     </div>
-                    <div class="pt-4 md:pt-0">
+                    <div>
                         <div class="text-lg text-gray-500 mb-1">Investition RF</div>
                         <div class="text-4xl font-extrabold text-primary">11.500 €</div>
                         <div class="text-xs text-gray-400 mt-2">Im ersten Jahr</div>
                     </div>
-                    <div class="pt-4 md:pt-0">
-                        <div class="text-lg text-gray-500 mb-1">Dein Netto-Gewinn</div>
-                        <div class="text-4xl font-extrabold text-green-500">45.000 €</div>
-                        <div class="text-xs text-gray-400 mt-2">Im ersten Jahr</div>
-                    </div>
-                    <div class="pt-4 md:pt-0 flex flex-col justify-center items-center">
+                    <div class="flex flex-col justify-center items-center">
                         <div class="text-5xl font-black text-accent">390%</div>
                         <div class="text-sm font-bold uppercase tracking-wider mt-2">ROI</div>
                     </div>
@@ -727,16 +723,15 @@
         </div>
     </section>
 
-    <!-- FAQ Section -->
+    <!-- FAQ Section (Complete 6 Items) -->
     <section id="faq" class="py-20 bg-bgLight">
         <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center mb-12 reveal">
                 <h2 class="text-3xl font-bold mb-4">Häufig gestellte Fragen</h2>
                 <p class="text-textGray">Automatisierung klingt großartig – aber wie funktioniert das in der Praxis?</p>
             </div>
-
             <div class="space-y-4 reveal delay-100">
-                <!-- FAQ Item 1 -->
+                <!-- 1 -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
                         <span class="font-bold text-lg">Funktioniert das mit meiner Software?</span>
@@ -746,37 +741,54 @@
                         Ja, absolut. Retina Flow automatisiert die KOMMUNIKATION – nicht die Verwaltung. Deine Software (fahrschule.live, Degener, etc.) behältst du komplett bei. Wir docken an und übernehmen die WhatsApp-Arbeit und Social Media.
                     </div>
                 </div>
-
-                <!-- FAQ Item 2 -->
+                <!-- 2 -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
                         <span class="font-bold text-lg">Muss mein Team etwas Neues lernen?</span>
                         <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                     </button>
                     <div class="hidden px-6 pb-6 text-textGray">
-                        Nein, praktisch nichts. Für Fahrlehrer: Foto schicken wie bisher. Für das Büro: Das System läuft im Hintergrund. Wir schulen euch einmal in 60 Minuten, danach läuft alles von selbst.
+                        Nein, praktisch nichts. Für Fahrlehrer: Foto schicken wie bisher – das war's. Für das Büro: Das System läuft im Hintergrund. Wir schulen euch einmal in 60 Minuten, danach läuft alles von selbst.
                     </div>
                 </div>
-
-                <!-- FAQ Item 3 -->
+                <!-- 3 -->
                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
                         <span class="font-bold text-lg">Was ist mit DSGVO und Datenschutz?</span>
                         <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                     </button>
                     <div class="hidden px-6 pb-6 text-textGray">
-                        100% konform. Alle Daten liegen auf deutschen Servern. Wir arbeiten mit Datenschutzexperten zusammen, um sicherzustellen, dass alle Prozesse den strengsten Standards entsprechen.
+                        100% konform. Alle Daten liegen auf deutschen Servern. Wir arbeiten mit Datenschutzexperten zusammen.
                     </div>
                 </div>
-
-                 <!-- FAQ Item 4 -->
-                 <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                <!-- 4 -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
                     <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
                         <span class="font-bold text-lg">Wie lange dauert die Implementierung?</span>
                         <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
                     </button>
                     <div class="hidden px-6 pb-6 text-textGray">
-                        Setup in 2 Wochen – wir machen alles. Von der technischen Integration über die Schulung bis zur vollständigen Aktivierung. Du musst dich um nichts kümmern.
+                        Setup in 2 Wochen – wir machen alles. Von der technischen Integration über die Schulung bis zur vollständigen Aktivierung.
+                    </div>
+                </div>
+                <!-- 5 -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        <span class="font-bold text-lg">Was passiert bei individuellen Fragen?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                    </button>
+                    <div class="hidden px-6 pb-6 text-textGray">
+                        Das System erkennt komplexe Anfragen und leitet sie automatisch an dein Team weiter. Retina Flow übernimmt nur die repetitiven Standard-Aufgaben.
+                    </div>
+                </div>
+                <!-- 6 -->
+                <div class="bg-white rounded-xl shadow-sm overflow-hidden">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center focus:outline-none" onclick="toggleFaq(this)">
+                        <span class="font-bold text-lg">Kann ich die Automatisierung kontrollieren?</span>
+                        <i data-lucide="chevron-down" class="w-5 h-5 transition-transform duration-300"></i>
+                    </button>
+                    <div class="hidden px-6 pb-6 text-textGray">
+                        Absolut. Du entscheidest, welche Module du nutzt und wie Nachrichten formuliert sind. Das Dashboard gibt dir volle Transparenz.
                     </div>
                 </div>
             </div>
@@ -786,16 +798,12 @@
     <!-- Final CTA -->
     <section id="contact" class="py-20 bg-white border-t border-gray-100">
         <div class="max-w-4xl mx-auto px-4 text-center reveal">
-            <div class="w-20 h-20 bg-blue-50 rounded-full flex items-center justify-center mx-auto mb-8">
-                <i data-lucide="calendar-clock" class="w-10 h-10 text-primary"></i>
-            </div>
             <h2 class="text-4xl md:text-5xl font-bold text-textDark mb-6">
                 Nächsten Montag um 9 Uhr:<br>Alle Termine fertig.
             </h2>
             <p class="text-xl text-textGray mb-10 max-w-2xl mx-auto">
-                Lass uns in 30 Minuten analysieren, was Retina Flow konkret für deine Fahrschule leisten kann. Wir rechnen aus, wie viel Zeit und Geld du sparst.
+                Lass uns in 30 Minuten analysieren, was Retina Flow konkret für deine Fahrschule leisten kann.
             </p>
-            
             <div class="flex flex-col items-center gap-6">
                 <button class="bg-accent text-white px-10 py-5 rounded-xl font-bold text-xl shadow-xl hover:bg-orange-500 transition transform hover:-translate-y-1 flex items-center gap-3 w-full md:w-auto justify-center">
                     <i data-lucide="bar-chart-2"></i> Kostenlose Potenzial-Analyse buchen
@@ -804,99 +812,44 @@
                 <div class="flex flex-wrap justify-center gap-4 text-sm text-gray-500 mt-4">
                     <span class="flex items-center gap-1"><i data-lucide="check" class="text-green-500 w-4 h-4"></i> Setup in 2 Wochen</span>
                     <span class="flex items-center gap-1"><i data-lucide="check" class="text-green-500 w-4 h-4"></i> 100% DSGVO-konform</span>
-                    <span class="flex items-center gap-1"><i data-lucide="check" class="text-green-500 w-4 h-4"></i> Passt zur deiner Software</span>
                 </div>
-            </div>
-
-            <div class="mt-16 p-8 bg-gray-50 rounded-2xl border border-gray-100">
-                <p class="text-lg font-medium text-textDark italic">
-                    "Die einzige Frage ist nicht, ob Automatisierung funktioniert. Die Frage ist: Wie lange willst du noch warten, bevor du die 10 Stunden pro Woche zurückgewinnst, die dein Team gerade verschwendet?"
-                </p>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
     <footer class="bg-textDark text-gray-400 py-12 border-t border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-                <div class="col-span-1 md:col-span-2">
-                    <div class="flex items-center gap-2 mb-4">
-                        <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">R</div>
-                        <span class="font-bold text-xl text-white">Retina Flow</span>
-                    </div>
-                    <p class="text-sm max-w-xs">
-                        Die führende Automatisierungsagentur für deutsche Fahrschulen. Wir schaffen Zeit für das Wesentliche.
-                    </p>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Links</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-white transition">Home</a></li>
-                        <li><a href="#solutions" class="hover:text-white transition">Lösungen</a></li>
-                        <li><a href="#roi" class="hover:text-white transition">ROI Rechner</a></li>
-                        <li><a href="#contact" class="hover:text-white transition">Kontakt</a></li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 class="text-white font-bold mb-4">Rechtliches</h4>
-                    <ul class="space-y-2 text-sm">
-                        <li><a href="#" class="hover:text-white transition">Impressum</a></li>
-                        <li><a href="#" class="hover:text-white transition">Datenschutz</a></li>
-                        <li><a href="#" class="hover:text-white transition">AGB</a></li>
-                    </ul>
-                </div>
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div class="flex items-center gap-2">
+                <div class="w-8 h-8 bg-primary rounded-lg flex items-center justify-center text-white font-bold">R</div>
+                <span class="font-bold text-xl text-white">Retina Flow</span>
             </div>
-            <div class="border-t border-gray-800 pt-8 flex justify-between items-center text-xs">
-                <div>&copy; 2024 Retina Flow. Alle Rechte vorbehalten.</div>
-                <div class="flex gap-4">
-                    <i data-lucide="linkedin" class="w-4 h-4 hover:text-white cursor-pointer"></i>
-                    <i data-lucide="instagram" class="w-4 h-4 hover:text-white cursor-pointer"></i>
-                </div>
+            <div class="text-sm">
+                &copy; 2024 Retina Flow. Made in Germany.
             </div>
         </div>
     </footer>
 
     <script>
-        // Initialize Lucide Icons
         lucide.createIcons();
 
-        // Mobile Menu Toggle
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-
-        btn.addEventListener('click', () => {
-            menu.classList.toggle('hidden');
-        });
-
-        // Navbar Scroll Effect
-        window.addEventListener('scroll', () => {
-            const navbar = document.getElementById('navbar');
-            if (window.scrollY > 50) {
-                navbar.classList.add('shadow-md');
-                navbar.classList.replace('h-20', 'h-16');
-            } else {
-                navbar.classList.remove('shadow-md');
-                navbar.classList.replace('h-16', 'h-20');
-            }
-        });
-
-        // FAQ Toggle Function
         function toggleFaq(button) {
             const content = button.nextElementSibling;
             const icon = button.querySelector('i');
-            
             content.classList.toggle('hidden');
-            
-            if (content.classList.contains('hidden')) {
-                icon.style.transform = 'rotate(0deg)';
-            } else {
-                icon.style.transform = 'rotate(180deg)';
-            }
+            icon.style.transform = content.classList.contains('hidden') ? 'rotate(0deg)' : 'rotate(180deg)';
         }
 
-        // Scroll Reveal Animation
-        const revealElements = document.querySelectorAll('.reveal');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileBtn = document.getElementById('mobile-menu-btn');
+
+        mobileBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        function closeMenu() {
+            mobileMenu.classList.add('hidden');
+        }
 
         const revealObserver = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
@@ -904,12 +857,9 @@
                     entry.target.classList.add('active');
                 }
             });
-        }, {
-            threshold: 0.1
-        });
+        }, { threshold: 0.1 });
 
-        revealElements.forEach(el => revealObserver.observe(el));
-
+        document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
     </script>
 </body>
 </html>
